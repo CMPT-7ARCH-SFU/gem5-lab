@@ -196,6 +196,8 @@ system.setTestBinary(args.binary)
 root = Root(full_system = False, system = system)
 m5.instantiate()
 
+start_tick = m5.curTick()
+
 exit_event = m5.simulate()
 
 print(exit_event.getCause())
