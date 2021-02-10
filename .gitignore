@@ -12,3 +12,5 @@ linux-stable/
 gem5-baseline
 bench.*
 *~
+*.bin
+*.dump
