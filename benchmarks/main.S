@@ -11,14 +11,15 @@
 
 .section .data
     testarray: .byte 5,1,3,7,8,10,6
-    # testarray2: .byte 7,3,5,8,5,12,250,1,99,2,54,34,23,65,13,24,75,37,88,77
-    msg: .string "Hello"	 
+ /*   # testarray2: .byte 7,3,5,8,5,12,250,1,99,2,54,34,23,65,13,24,75,37,88,77 */
+    msg: .string "Hello"
+	
 .section .text
 _start:
     li a0,1     /* stdout */
-    la a1,msg   /* buffer */
+    la a1,msg
     li a2,5  /* len */
-    li a7,64
+    li a7,_SYS_WR
     ecall
     la a1, testarray
     li a2, 0

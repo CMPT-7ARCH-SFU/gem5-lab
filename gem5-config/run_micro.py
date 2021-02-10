@@ -35,7 +35,7 @@ from m5.objects import TimingSimpleCPU, DerivO3CPU, MinorCPU
 from m5.objects import LTAGE, SimpleMemory
 from m5.objects import Root
 from m5.objects import *
-
+import time
 from system import BaseTestSystem
 from system import InfMemory, SingleCycleMemory, SlowMemory
 
@@ -122,10 +122,10 @@ class Ideal_FUPool(FUPool):
 class Minor4CPU(MinorCPU):
     branchPred = BranchPredictor()
     fuPool = Ideal_FUPool()
-    decodeInputWidth  = 4
-    executeInputWidth = 4
-    executeIssueLimit = 4
-    executeCommitLimit = 4
+    decodeInputWidth  = 1
+    executeInputWidth = 1
+    executeIssueLimit = 1
+    executeCommitLimit = 1
 
 
 class O3_W256CPU(DerivO3CPU):
@@ -185,19 +185,21 @@ parser = argparse.ArgumentParser()
 parser.add_argument('cpu', choices = valid_cpus.keys())
 parser.add_argument('memory_model', choices = valid_memories.keys())
 parser.add_argument('binary', type = str, help = "Path to binary to run")
+parser.add_argument('--clk', type = str, help = "Clock")
 args  = parser.parse_args()
 
 class MySystem(BaseTestSystem):
     _CPUModel = valid_cpus[args.cpu]
     _MemoryModel = valid_memories[args.memory_model]
-    _Clk         = "3GHz"
+    _Clk         = args.clk
 system = MySystem()
 system.setTestBinary(args.binary)
 root = Root(full_system = False, system = system)
 m5.instantiate()
 
 start_tick = m5.curTick()
-
+start_insts = system.totalInsts()
+globalStart = time.time()
 exit_event = m5.simulate()
 
 print(exit_event.getCause())
@@ -206,6 +208,8 @@ if exit_event.getCause() == "workbegin":
     # start of ROI is marked by an
     # m5_work_begin() call
     m5.stats.reset()
+    start_tick = m5.curTick()
+    start_insts = system.totalInsts()
     print("Resetting stats at the start of ROI!")
 
 exit_event = m5.simulate()

@@ -188,7 +188,7 @@ class BaseTestSystem(System):
             self.system_port = self.membus.slave
 
         else:
-            self.clk_domain = SrcClockDomain(clock = "1GHz",
+            self.clk_domain = SrcClockDomain(clock = self._Clk,
                                              voltage_domain = VoltageDomain())
 
             self.mem_mode = 'timing'

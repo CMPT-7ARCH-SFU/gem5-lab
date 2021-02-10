@@ -12,17 +12,17 @@ RISCV_LD = $(RISCV_PREFIX)ld
 RISCV_OBJDUMP = $(RISCV_PREFIX)objdump --disassemble-all --disassemble-zeroes --section=.text --section=.text.startup --section=.data
 RISCV_SIM = /data/rv-qemu/bin/qemu-riscv64
 
-all: $(BINS) $(DUMPS)
+all: $(BINS) $(DUMPS) $(OBJECTS)
 
 
 %.dump: %.bin
-	$(RISCV_OBJDUMP) $^ >> $@
+	$(RISCV_OBJDUMP) $^ > $@
 
 %.bin: %.o
-	$(RISCV_LD) -Ttext 0x0 -Tdata 0x400 $^ -o $@
+	$(RISCV_LD)  $^ -o $@
 
 %.o: %.s
-	$(RISCV_AS) $< -o $@
+	$(RISCV_AS) -g $< -o $@
 
 
 clean:
