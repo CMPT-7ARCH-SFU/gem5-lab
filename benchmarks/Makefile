@@ -1,16 +1,4 @@
-RISCV_HOME?=/data/rv-linux/
-SOURCES := $(wildcard *.s)
-OBJECTS := $(patsubst %.s, %.o, $(SOURCES))
-BINS     := $(patsubst %.s, %.bin, $(SOURCES))
-DUMPS     := $(patsubst %.s, %.dump, $(SOURCES))
-
-RISCV_PREFIX=$(RISCV_HOME)/bin/riscv64-unknown-linux-
-RISCV_GCC = $(RISCV_PREFIX)gcc
-RISCV_GCC_OPTS = -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf
-RISCV_AS = $(RISCV_PREFIX)gnu-as
-RISCV_LD = $(RISCV_PREFIX)gnu-ld -Tdata 0x0 -Ttext 0x1000
-RISCV_OBJDUMP = $(RISCV_PREFIX)gnu-objdump --disassemble-all --disassemble-zeroes --section=.text --section=.text.startup --section=.data
-RISCV_SIM = /data/rv-qemu/bin/qemu-riscv64
+include Makefile.riscv.common
 
 all: $(BINS) $(DUMPS) $(OBJECTS)
 
