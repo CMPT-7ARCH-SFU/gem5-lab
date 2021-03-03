@@ -190,7 +190,7 @@ class BaseTestSystem(System):
         else:
             self.clk_domain = SrcClockDomain(clock = self._Clk,
                                              voltage_domain = VoltageDomain())
-
+            self.exit_on_work_items = True
             self.mem_mode = 'timing'
             self.mem_ranges = [AddrRange('2GB')]
 

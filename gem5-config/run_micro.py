@@ -227,13 +227,10 @@ if exit_event.getCause() == "workend":
     m5.stats.reset()
 else:
     print("Terminated simulation before reaching ROI!")
-    print()
     m5.stats.dump()
     end_tick = m5.curTick()
     end_insts = system.totalInsts()
-    m5.stats.reset()
     print("Performance statistics:")
-
     print("Simulated time: %.2fs" % ((end_tick-start_tick)/1e12))
     print("Instructions executed: %d" % ((end_insts-start_insts)))
     print("Ran a total of", m5.curTick()/1e12, "simulated seconds")

@@ -1,8 +1,4 @@
 RISCV_HOME?=/data/rv-linux/
-SOURCES := $(wildcard *.s)
-OBJECTS := $(patsubst %.s, %.o, $(SOURCES))
-BINS     := $(patsubst %.s, %.bin, $(SOURCES))
-DUMPS     := $(patsubst %.s, %.dump, $(SOURCES))
 
 RISCV_PREFIX=$(RISCV_HOME)/bin/riscv64-unknown-linux-gnu-
 RISCV_GCC = $(RISCV_PREFIX)gcc
