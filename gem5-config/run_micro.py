@@ -191,7 +191,8 @@ args  = parser.parse_args()
 class MySystem(BaseTestSystem):
     _CPUModel = valid_cpus[args.cpu]
     _MemoryModel = valid_memories[args.memory_model]
-    _Clk         = args.clk
+    _Clk         = "1GHz"
+
 system = MySystem()
 system.setTestBinary(args.binary)
 root = Root(full_system = False, system = system)
@@ -202,7 +203,7 @@ start_insts = system.totalInsts()
 globalStart = time.time()
 exit_event = m5.simulate()
 
-print(exit_event.getCause())
+print("Exit Event" + exit_event.getCause())
 if exit_event.getCause() == "workbegin":
     # Reached the start of ROI
     # start of ROI is marked by an
@@ -211,11 +212,10 @@ if exit_event.getCause() == "workbegin":
     start_tick = m5.curTick()
     start_insts = system.totalInsts()
     print("Resetting stats at the start of ROI!")
-
-exit_event = m5.simulate()
-
-    # Reached the end of ROI
-    # Finish executing the benchmark with kvm cpu
+    exit_event = m5.simulate()
+    
+# Reached the end of ROI
+# Finish executing the benchmark with kvm cpu
 if exit_event.getCause() == "workend":
     # Reached the end of ROI
     # end of ROI is marked by an
