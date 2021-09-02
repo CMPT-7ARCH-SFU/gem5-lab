@@ -185,13 +185,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('cpu', choices = valid_cpus.keys())
 parser.add_argument('memory_model', choices = valid_memories.keys())
 parser.add_argument('binary', type = str, help = "Path to binary to run")
-parser.add_argument('--clk', type = str, help = "Clock")
+parser.add_argument("--clock", action="store",
+                      default='1GHz',
+                      help = """Top-level clock for blocks running at system
+                      speed""")
 args  = parser.parse_args()
 
 class MySystem(BaseTestSystem):
     _CPUModel = valid_cpus[args.cpu]
     _MemoryModel = valid_memories[args.memory_model]
-    _Clk         = "1GHz"
+    _Clk         = args.clock
 
 system = MySystem()
 system.setTestBinary(args.binary)
