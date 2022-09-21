@@ -189,9 +189,6 @@ class Ideal_FUPool2(FUPool):
 class Minor4CPU(MinorCPU):
     branchPred = BranchPredictor()
     executeFuncUnits = Minor4FUPool()
-    # funcUnits = [ IntALU(), ReadPort(),
-    #             WritePort(), RdWrPort(), IprPort() ]
-    #fuPool = Ideal_FUPool()
     decodeInputWidth  = 1
     executeInputWidth = 1
     executeIssueLimit = 1
@@ -310,5 +307,3 @@ else:
     print("Total wallclock time: %.2fs, %.2f min" % \
           (time.time()-globalStart, (time.time()-globalStart)/60))
     exit()
-    
-
