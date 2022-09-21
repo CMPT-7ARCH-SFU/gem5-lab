@@ -41,76 +41,13 @@ from system import InfMemory, SingleCycleMemory, SlowMemory
 
 BranchPredictor = LTAGE
 
-
-
-
-class MinorIntFU(MinorFU):
-    opClasses = minorMakeOpClassSet(['IntAlu'])
-    timings = [MinorFUTiming(description="Int",
-        srcRegsRelativeLats=[2])]
-    opLat = 5
-    issueLat = 5
-
-class MinorIntMulFU(MinorFU):
-    opClasses = minorMakeOpClassSet(['IntMult'])
-    timings = [MinorFUTiming(description='Mul',
-        srcRegsRelativeLats=[0])]
-    opLat = 3
-
-class MinorIntDivFU(MinorFU):
-    opClasses = minorMakeOpClassSet(['IntDiv'])
-    issueLat = 9
-    opLat = 9
-class MinorFloatSimdFU(MinorFU):
-    opClasses = minorMakeOpClassSet([
-        'FloatAdd', 'FloatCmp', 'FloatCvt', 'FloatMisc', 'FloatMult',
-        'FloatMultAcc', 'FloatDiv', 'FloatSqrt',
-        'SimdAdd', 'SimdAddAcc', 'SimdAlu', 'SimdCmp', 'SimdCvt',
-        'SimdMisc', 'SimdMult', 'SimdMultAcc', 'SimdShift', 'SimdShiftAcc',
-        'SimdDiv', 'SimdSqrt', 'SimdFloatAdd', 'SimdFloatAlu', 'SimdFloatCmp',
-        'SimdFloatCvt', 'SimdFloatDiv', 'SimdFloatMisc', 'SimdFloatMult',
-        'SimdFloatMultAcc', 'SimdFloatSqrt', 'SimdReduceAdd', 'SimdReduceAlu',
-        'SimdReduceCmp', 'SimdFloatReduceAdd', 'SimdFloatReduceCmp',
-        'SimdAes', 'SimdAesMix',
-        'SimdSha1Hash', 'SimdSha1Hash2', 'SimdSha256Hash',
-        'SimdSha256Hash2', 'SimdShaSigma2', 'SimdShaSigma3'])
-
-    timings = [MinorFUTiming(description='FloatSimd',
-        srcRegsRelativeLats=[2])]
-    opLat = 6
-
-class MinorPredFU(MinorFU):
-    opClasses = minorMakeOpClassSet(['SimdPredAlu'])
-    timings = [MinorFUTiming(description="Pred",
-        srcRegsRelativeLats=[2])]
-    opLat = 3
-    
-
-class MinorMemFU(MinorFU):
-    opClasses = minorMakeOpClassSet(['MemRead', 'MemWrite', 'FloatMemRead',
-                                     'FloatMemWrite'])
-    timings = [MinorFUTiming(description='Mem',
-        srcRegsRelativeLats=[1], extraAssumedLat=2)]
-    opLat = 1
-
-class MinorMiscFU(MinorFU):
-    opClasses = minorMakeOpClassSet(['IprAccess', 'InstPrefetch'])
-    opLat = 1
-
-class Minor4FUPool(MinorFUPool):
-    funcUnits = [MinorIntFU(),
-        MinorIntMulFU(), MinorIntDivFU(),
-        MinorFloatSimdFU(), MinorPredFU(),
-        MinorMemFU(), MinorMiscFU()]
-
 class IntALU(FUDesc):
-    opList = [ OpDesc(opClass='IntAlu', opLat=1) ]
-    
+    opList = [ OpDesc(opClass='IntAlu',opLat=1) ]
     count = 32
 
 class IntMultDiv(FUDesc):
     opList = [ OpDesc(opClass='IntMult', opLat=1),
-               OpDesc(opClass='IntDiv', opLat=1, pipelined=False) ]
+               OpDesc(opClass='IntDiv', opLat=20, pipelined=False) ]
 
     # DIV and IDIV instructions in x86 are implemented using a loop which
     # issues division microops.  The latency of these microops should really be
@@ -178,20 +115,13 @@ class IprPort(FUDesc):
     count = 32
 
 class Ideal_FUPool(FUPool):
-    FUList = [ IntALU(), ReadPort(),
-                WritePort(), RdWrPort(), IprPort() ]
+    FUList = [ IntALU(), IntMultDiv(), FP_ALU(), FP_MultDiv(), ReadPort(),
+               SIMD_Unit(), WritePort(), RdWrPort(), IprPort() ]
 
-
-class Ideal_FUPool2(FUPool):
-   funcUnits  = [ IntALU(), ReadPort(),
-                WritePort(), RdWrPort(), IprPort() ]
 
 class Minor4CPU(MinorCPU):
     branchPred = BranchPredictor()
-    executeFuncUnits = Minor4FUPool()
-    # funcUnits = [ IntALU(), ReadPort(),
-    #             WritePort(), RdWrPort(), IprPort() ]
-    #fuPool = Ideal_FUPool()
+    fuPool = Ideal_FUPool()
     decodeInputWidth  = 1
     executeInputWidth = 1
     executeIssueLimit = 1
